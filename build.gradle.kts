@@ -5,9 +5,10 @@
 // * gradle.properties file in project root with GHIDRA_INSTALL_DIR property
 
 plugins {
-    kotlin("jvm") version "2.1.0"
-    kotlin("plugin.serialization") version "2.1.0"
-    id("com.gradleup.shadow") version "8.3.5"
+    kotlin("jvm") version "2.2.21"
+    kotlin("plugin.serialization") version "2.2.21"
+    id("com.gradleup.shadow") version "9.2.2"
+    id("com.github.ben-manes.versions") version "0.53.0"  // For checking dependency updates
     idea
 }
 
@@ -36,20 +37,20 @@ dependencies {
     implementation("io.modelcontextprotocol:kotlin-sdk:0.7.4")
     
     // Ktor Server for SSE transport
-    implementation("io.ktor:ktor-server-core-jvm:3.0.3")
-    implementation("io.ktor:ktor-server-netty-jvm:3.0.3")
-    implementation("io.ktor:ktor-server-sse-jvm:3.0.3")
+    implementation("io.ktor:ktor-server-core-jvm:3.3.2")
+    implementation("io.ktor:ktor-server-netty-jvm:3.3.2")
+    implementation("io.ktor:ktor-server-sse-jvm:3.3.2")
     
     // Kotlinx Serialization
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.3")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.9.0")
     
     // Kotlinx Coroutines
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.9.0")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-swing:1.9.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-swing:1.10.2")
     
     // Logging
     implementation("org.slf4j:slf4j-api:2.0.16")
-    implementation("ch.qos.logback:logback-classic:1.5.12")
+    implementation("ch.qos.logback:logback-classic:1.5.20")
     
     // Ghidra JARs - use GHIDRA_INSTALL_DIR or fallback to lib directory
     val ghidraDir = File(ghidraInstallDir, "Ghidra")

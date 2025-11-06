@@ -23,21 +23,6 @@
     gradle clean build
   '';
 
-  scripts.compile.exec = ''
-    echo "Compiling Ghidra MCP Plugin..."
-    gradle classes
-  '';
-
-  scripts.test.exec = ''
-    echo "Running tests..."
-    gradle test
-  '';
-
-  scripts.clean.exec = ''
-    echo "Cleaning build artifacts..."
-    gradle clean
-  '';
-
   enterShell = ''
     echo ""
     echo "🔧 $GREET"
@@ -61,12 +46,4 @@
     echo "  ${pkgs.ghidra.version}"
     echo ""
   '';
-
-  # https://devenv.sh/pre-commit-hooks/
-  # pre-commit.hooks.shellcheck.enable = true;
-
-  # https://devenv.sh/processes/
-  # processes.ping.exec = "ping example.com";
-
-  # See full reference at https://devenv.sh/reference/options/
 }
