@@ -32,8 +32,8 @@ class KGhidraMCPPlugin(tool: PluginTool) : Plugin(tool) {
         private const val OPTION_CATEGORY_NAME = "KGhidraMCP Server"
         private const val PORT_OPTION_NAME = "Server Port"
         private const val DEFAULT_PORT = 3001
-        private const val HOST_OPTION_NAME = "Server Host"
-        private const val DEFAULT_HOST = "127.0.0.1"
+        private const val INTERFACE_OPTION_NAME = "Server Interface"
+        private const val DEFAULT_INTERFACE = "127.0.0.1"
         private const val AUTO_START_OPTION_NAME = "Auto-start Server"
         private const val DEFAULT_AUTO_START = true
     }
@@ -54,11 +54,11 @@ class KGhidraMCPPlugin(tool: PluginTool) : Plugin(tool) {
             "Requires plugin reload to take effect after changing."
         )
         options.registerOption(
-            HOST_OPTION_NAME,
-            DEFAULT_HOST,
+            INTERFACE_OPTION_NAME,
+            DEFAULT_INTERFACE,
             null,
             "The network interface the MCP server will bind to. " +
-            "Use '127.0.0.1' (localhost only) or '0.0.0.0' (all interfaces). " +
+            "Use '127.0.0.1' for localhost only (recommended), or '0.0.0.0' for all interfaces. " +
             "Requires plugin reload to take effect after changing."
         )
         options.registerOption(
@@ -70,7 +70,7 @@ class KGhidraMCPPlugin(tool: PluginTool) : Plugin(tool) {
         
         // Read configuration
         val port = options.getInt(PORT_OPTION_NAME, DEFAULT_PORT)
-        val host = options.getString(HOST_OPTION_NAME, DEFAULT_HOST)
+        val host = options.getString(INTERFACE_OPTION_NAME, DEFAULT_INTERFACE)
         val autoStart = options.getBoolean(AUTO_START_OPTION_NAME, DEFAULT_AUTO_START)
         
         // Initialize server manager
