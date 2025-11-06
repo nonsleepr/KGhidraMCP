@@ -110,13 +110,14 @@ fun registerDecompilationTools(server: Server, context: GhidraContext) {
     server.addTool(
         name = "list_functions",
         description = "List all functions in the program with their addresses.",
-        inputSchema = io.modelcontextprotocol.kotlin.sdk.Tool.Input(
-            properties = JsonObject(emptyMap())
-        )
+        inputSchema = createPaginatedInputSchema()
     ) { request: CallToolRequest ->
         try {
+            val offset = request.arguments.getIntParam("offset") ?: 0
+            val limit = request.arguments.getIntParam("limit") ?: 100
+            
             val result = context.runInSwingThreadWithResult {
-                listFunctions(context)
+                listFunctions(context, offset, limit)
             }
             createSuccessResult(result)
         } catch (e: Exception) {
@@ -211,15 +212,15 @@ private fun disassembleFunction(context: GhidraContext, addressStr: String): Str
     return result.toString()
 }
 
-private fun listFunctions(context: GhidraContext): String {
+private fun listFunctions(context: GhidraContext, offset: Int, limit: Int): String {
     val program = context.getCurrentProgram() ?: return "No program loaded"
     
-    val result = StringBuilder()
+    val functions = mutableListOf<String>()
     for (func in program.functionManager.getFunctions(true)) {
-        result.append("${func.name} at ${func.entryPoint}\n")
+        functions.add("${func.name} at ${func.entryPoint}")
     }
     
-    return result.toString()
+    return paginateList(functions, offset, limit)
 }
 
 /**
