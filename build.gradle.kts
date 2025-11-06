@@ -47,11 +47,6 @@ val ghidraInstallDir = System.getenv("GHIDRA_INSTALL_DIR")
 apply(from = File(ghidraInstallDir).canonicalPath + "/support/buildExtension.gradle")
 //----------------------END "DO NOT MODIFY" SECTION-------------------------------
 
-// Disable copyDependencies task to prevent pollution of lib/ directory
-tasks.named("copyDependencies") {
-    enabled = false
-}
-
 kotlin {
     jvmToolchain(21)
 }
@@ -72,16 +67,15 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-swing:1.10.2")
     
-    // Logging - use Ghidra's SLF4J and Log4j
-    compileOnly("org.slf4j:slf4j-api:2.0.16")
-    implementation("org.apache.logging.log4j:log4j-slf4j-impl:2.17.1")
+    // Logging
+    implementation("org.slf4j:slf4j-api:2.0.16")
+    implementation("ch.qos.logback:logback-classic:1.5.20")
     
     // Ghidra JARs - use GHIDRA_INSTALL_DIR or fallback to lib directory
-    // Use compileOnly since Ghidra provides these at runtime
     val ghidraDir = File(ghidraInstallDir, "Ghidra")
     if (ghidraDir.exists()) {
         // Use JARs directly from Ghidra installation
-        compileOnly(files(
+        implementation(files(
             "$ghidraDir/Framework/Generic/lib/Generic.jar",
             "$ghidraDir/Framework/SoftwareModeling/lib/SoftwareModeling.jar",
             "$ghidraDir/Framework/Project/lib/Project.jar",
@@ -93,7 +87,7 @@ dependencies {
         ))
     } else {
         // Fallback to local lib directory (for backward compatibility)
-        compileOnly(fileTree("lib") { include("*.jar") })
+        implementation(fileTree("lib") { include("*.jar") })
     }
     
     // Test dependencies
@@ -148,37 +142,16 @@ tasks.shadowJar {
         from("src/main/resources/META-INF/MANIFEST.MF")
     }
     
-    // Configure which dependencies to include (exclude Ghidra JARs and old lib/ directory)
-    configurations = listOf(project.configurations.runtimeClasspath.get())
-    
-    // Enable minimization to remove unused classes
-    minimize {
-        // Exclude Ghidra JARs from minimization - they're provided at runtime
-        exclude(dependency(".*:Generic:.*"))
-        exclude(dependency(".*:SoftwareModeling:.*"))
-        exclude(dependency(".*:Project:.*"))
-        exclude(dependency(".*:Docking:.*"))
-        exclude(dependency(".*:Decompiler:.*"))
-        exclude(dependency(".*:Utility:.*"))
-        exclude(dependency(".*:Base:.*"))
-        exclude(dependency(".*:Gui:.*"))
-    }
-    
     // Relocate packages to avoid conflicts with Ghidra
     relocate("kotlin", "io.github.nonsleepr.mcp.shaded.kotlin")
     relocate("kotlinx", "io.github.nonsleepr.mcp.shaded.kotlinx")
     relocate("io.ktor", "io.github.nonsleepr.mcp.shaded.ktor")
     relocate("io.modelcontextprotocol", "io.github.nonsleepr.mcp.shaded.mcp")
+    relocate("org.slf4j", "io.github.nonsleepr.mcp.shaded.slf4j")
+    relocate("ch.qos.logback", "io.github.nonsleepr.mcp.shaded.logback")
     
-    // Exclude Ghidra dependencies (already in Ghidra) - exclude all Ghidra-related packages
+    // Exclude Ghidra dependencies (already in Ghidra)
     exclude("ghidra/**")
-    exclude("generic/**")
-    exclude("docking/**")
-    exclude("help/**")
-    exclude("resources/**")
-    exclude("utility/**")
-    exclude("mdemangler/**")
-    exclude("sarif/**")
     
     // Merge service files (important for Ktor and other frameworks)
     mergeServiceFiles()
