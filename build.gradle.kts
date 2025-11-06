@@ -51,8 +51,24 @@ dependencies {
     implementation("org.slf4j:slf4j-api:2.0.16")
     implementation("ch.qos.logback:logback-classic:1.5.12")
     
-    // Ghidra JARs from local lib directory
-    implementation(fileTree("lib") { include("*.jar") })
+    // Ghidra JARs - use GHIDRA_INSTALL_DIR or fallback to lib directory
+    val ghidraDir = File(ghidraInstallDir, "Ghidra")
+    if (ghidraDir.exists()) {
+        // Use JARs directly from Ghidra installation
+        implementation(files(
+            "$ghidraDir/Framework/Generic/lib/Generic.jar",
+            "$ghidraDir/Framework/SoftwareModeling/lib/SoftwareModeling.jar",
+            "$ghidraDir/Framework/Project/lib/Project.jar",
+            "$ghidraDir/Framework/Docking/lib/Docking.jar",
+            "$ghidraDir/Features/Decompiler/lib/Decompiler.jar",
+            "$ghidraDir/Framework/Utility/lib/Utility.jar",
+            "$ghidraDir/Features/Base/lib/Base.jar",
+            "$ghidraDir/Framework/Gui/lib/Gui.jar"
+        ))
+    } else {
+        // Fallback to local lib directory (for backward compatibility)
+        implementation(fileTree("lib") { include("*.jar") })
+    }
     
     // Test dependencies
     testImplementation(kotlin("test"))
