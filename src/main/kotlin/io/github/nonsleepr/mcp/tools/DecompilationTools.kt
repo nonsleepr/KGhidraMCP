@@ -203,7 +203,7 @@ private fun disassembleFunction(context: GhidraContext, addressStr: String): Str
         val instr = instructions.next()
         if (instr.address > end) break
         
-        val comment = listing.getComment(CodeUnit.EOL_COMMENT, instr.address)
+        val comment = listing.getComment(CommentType.EOL, instr.address)
         val commentStr = if (comment != null) "; $comment" else ""
         
         result.append("${instr.address}: $instr $commentStr\n")

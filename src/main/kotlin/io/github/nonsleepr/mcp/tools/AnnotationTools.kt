@@ -3,6 +3,7 @@ package io.github.nonsleepr.mcp.tools
 
 import io.github.nonsleepr.mcp.*
 import ghidra.program.model.listing.CodeUnit
+import ghidra.program.model.listing.CommentType
 import ghidra.program.model.listing.Function
 import ghidra.program.model.symbol.SourceType
 import io.modelcontextprotocol.kotlin.sdk.CallToolRequest
@@ -165,7 +166,7 @@ fun registerAnnotationTools(server: Server, context: GhidraContext) {
 // Helper functions
 
 private fun setCommentAtAddress(context: GhidraContext, addressStr: String, comment: String,
-                                commentType: Int, transactionName: String): Boolean {
+                                commentType: CommentType, transactionName: String): Boolean {
     val program = context.getCurrentProgram() ?: return false
     
     var success = false
@@ -184,11 +185,11 @@ private fun setCommentAtAddress(context: GhidraContext, addressStr: String, comm
 }
 
 private fun setDecompilerComment(context: GhidraContext, addressStr: String, comment: String): Boolean {
-    return setCommentAtAddress(context, addressStr, comment, CodeUnit.PRE_COMMENT, "Set decompiler comment")
+    return setCommentAtAddress(context, addressStr, comment, CommentType.PRE, "Set decompiler comment")
 }
 
 private fun setDisassemblyComment(context: GhidraContext, addressStr: String, comment: String): Boolean {
-    return setCommentAtAddress(context, addressStr, comment, CodeUnit.EOL_COMMENT, "Set disassembly comment")
+    return setCommentAtAddress(context, addressStr, comment, CommentType.EOL, "Set disassembly comment")
 }
 
 private fun setFunctionPrototype(context: GhidraContext, functionAddrStr: String, prototype: String): String {
@@ -211,7 +212,7 @@ private fun setFunctionPrototype(context: GhidraContext, functionAddrStr: String
         try {
             program.listing.setComment(
                 func.entryPoint,
-                CodeUnit.PLATE_COMMENT,
+                CommentType.PLATE,
                 "Setting prototype: $prototype"
             )
         } finally {
