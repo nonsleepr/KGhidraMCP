@@ -74,8 +74,8 @@ dependencies {
     // Ghidra JARs - use GHIDRA_INSTALL_DIR or fallback to lib directory
     val ghidraDir = File(ghidraInstallDir, "Ghidra")
     if (ghidraDir.exists()) {
-        // Use JARs directly from Ghidra installation
-        implementation(files(
+        // Use JARs directly from Ghidra installation as compileOnly
+        compileOnly(files(
             "$ghidraDir/Framework/Generic/lib/Generic.jar",
             "$ghidraDir/Framework/SoftwareModeling/lib/SoftwareModeling.jar",
             "$ghidraDir/Framework/Project/lib/Project.jar",
@@ -87,7 +87,7 @@ dependencies {
         ))
     } else {
         // Fallback to local lib directory (for backward compatibility)
-        implementation(fileTree("lib") { include("*.jar") })
+        compileOnly(fileTree("lib") { include("*.jar") })
     }
     
     // Test dependencies
@@ -146,6 +146,7 @@ tasks.shadowJar {
     relocate("kotlin", "io.github.nonsleepr.mcp.shaded.kotlin")
     relocate("kotlinx", "io.github.nonsleepr.mcp.shaded.kotlinx")
     relocate("io.ktor", "io.github.nonsleepr.mcp.shaded.ktor")
+    relocate("io.netty", "io.github.nonsleepr.mcp.shaded.netty")
     relocate("io.modelcontextprotocol", "io.github.nonsleepr.mcp.shaded.mcp")
     relocate("org.slf4j", "io.github.nonsleepr.mcp.shaded.slf4j")
     relocate("ch.qos.logback", "io.github.nonsleepr.mcp.shaded.logback")
@@ -169,7 +170,8 @@ tasks.register<Zip>("packageExtension") {
     description = "Package the Ghidra extension with fat JAR"
     
     // Declare explicit dependencies
-    dependsOn(tasks.shadowJar, tasks.jar)
+    dependsOn(tasks.shadowJar)
+    mustRunAfter(tasks.jar)
     
     archiveBaseName.set("KGhidraMCP")
     archiveVersion.set(project.version.toString())
