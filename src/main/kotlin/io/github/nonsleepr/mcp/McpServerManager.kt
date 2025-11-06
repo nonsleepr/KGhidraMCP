@@ -16,10 +16,28 @@ import io.github.nonsleepr.mcp.tools.*
  */
 class McpServerManager(
     private val context: GhidraContext,
-    private val port: Int = 3001,
-    private val host: String = "127.0.0.1"
+    private var port: Int = 3001,
+    private var host: String = "127.0.0.1"
 ) {
     private var server: EmbeddedServer<NettyApplicationEngine, NettyApplicationEngine.Configuration>? = null
+    
+    /**
+     * Reconfigure the server with new port and host
+     * Will restart the server if it's currently running
+     */
+    fun reconfigure(newPort: Int, newHost: String) {
+        val wasRunning = isRunning()
+        if (wasRunning) {
+            stop()
+        }
+        
+        port = newPort
+        host = newHost
+        
+        if (wasRunning) {
+            start()
+        }
+    }
     
     /**
      * Start the MCP server
