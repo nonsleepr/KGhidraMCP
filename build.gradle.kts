@@ -13,7 +13,26 @@ plugins {
 }
 
 group = "io.github.nonsleepr"
-version = "1.0-SNAPSHOT"
+
+// Extract version from git tags or commit hash
+val gitVersion: String by lazy {
+    try {
+        val process = Runtime.getRuntime().exec(arrayOf("git", "describe", "--tags", "--always", "--dirty"))
+        val output = process.inputStream.bufferedReader().readText().trim()
+        process.waitFor()
+        if (process.exitValue() == 0 && output.isNotEmpty()) {
+            // Remove 'v' prefix if present (e.g., v1.0.1 -> 1.0.1)
+            output.removePrefix("v")
+        } else {
+            "1.0-SNAPSHOT"
+        }
+    } catch (e: Exception) {
+        println("Warning: Could not determine git version, using default: ${e.message}")
+        "1.0-SNAPSHOT"
+    }
+}
+
+version = gitVersion
 
 repositories {
     mavenCentral()
@@ -83,6 +102,22 @@ dependencies {
 
 tasks.test {
     useJUnitPlatform()
+}
+
+// Configure processResources to replace version tokens in resource files
+tasks.processResources {
+    // Expand version in all .properties and MANIFEST.MF files
+    filesMatching(listOf("**/*.properties", "**/MANIFEST.MF")) {
+        expand(
+            "version" to project.version.toString(),
+            "projectVersion" to project.version.toString()
+        )
+    }
+}
+
+// Make version available at runtime via system property
+tasks.withType<JavaExec> {
+    systemProperty("kghidramcp.version", project.version.toString())
 }
 
 // Configure the JAR task

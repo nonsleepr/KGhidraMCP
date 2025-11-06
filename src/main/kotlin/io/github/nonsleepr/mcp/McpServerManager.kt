@@ -72,7 +72,7 @@ fun Application.mcpModule(context: GhidraContext) {
         val mcpServer = Server(
             serverInfo = Implementation(
                 name = "ghidra-mcp-server",
-                version = "1.0.0"
+                version = System.getProperty("kghidramcp.version", "1.0.0")
             ),
             options = ServerOptions(
                 capabilities = ServerCapabilities(
