@@ -172,7 +172,7 @@ tasks.register<Zip>("packageExtension") {
     dependsOn(tasks.shadowJar, tasks.jar)
     
     archiveBaseName.set("KGhidraMCP")
-    archiveVersion.set("")
+    archiveVersion.set(project.version.toString())
     archiveClassifier.set("")
     destinationDirectory.set(file("dist"))
     
