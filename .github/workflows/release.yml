@@ -39,8 +39,7 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           files: |
-            build/libs/*.jar
-            build/distributions/*.zip
+            dist/*.zip
           draft: false
           prerelease: false
           generate_release_notes: true
