@@ -16,7 +16,8 @@ import io.github.nonsleepr.mcp.tools.*
  */
 class McpServerManager(
     private val context: GhidraContext,
-    private val port: Int = 3001
+    private val port: Int = 3001,
+    private val host: String = "127.0.0.1"
 ) {
     private var server: EmbeddedServer<NettyApplicationEngine, NettyApplicationEngine.Configuration>? = null
     
@@ -29,16 +30,17 @@ class McpServerManager(
             return
         }
         
-        context.logInfo("Starting MCP server on port $port...")
+        context.logInfo("Starting MCP server on $host:$port...")
         
         try {
-            server = embeddedServer(Netty, port = port, host = "0.0.0.0") {
+            server = embeddedServer(Netty, port = port, host = host) {
                 mcpModule(context)
             }
             
             server?.start(wait = false)
-            context.logInfo("MCP server started successfully on port $port")
-            context.logInfo("MCP SSE endpoint available at: http://localhost:$port/mcp")
+            context.logInfo("MCP server started successfully on $host:$port")
+            val displayHost = if (host == "0.0.0.0") "localhost" else host
+            context.logInfo("MCP SSE endpoint available at: http://$displayHost:$port/mcp")
         } catch (e: Exception) {
             context.logError("Failed to start MCP server on port $port", e)
             server = null
