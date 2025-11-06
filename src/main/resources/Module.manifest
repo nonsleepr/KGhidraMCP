@@ -1,0 +1,2 @@
+GHIDRA_MODULE_NAME=KGhidraMCP
+GHIDRA_MODULE_DESC=A MCP server plugin for Ghidra

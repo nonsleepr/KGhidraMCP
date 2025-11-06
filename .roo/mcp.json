@@ -1,0 +1,6 @@
+{"mcpServers":{
+    "ghidra": {
+        "type": "sse",
+        "url": "http://localhost:3001/"
+    }
+}}

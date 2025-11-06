@@ -1,0 +1,43 @@
+# Devenv
+.devenv*
+devenv.local.nix
+devenv.local.yaml
+
+# direnv
+.direnv
+
+# pre-commit
+.pre-commit-config.yaml
+
+# Gradle
+.gradle/
+build/
+dist/
+*.gradle.kts.compiled
+
+# Gradle wrapper (optional)
+gradlew
+gradlew.bat
+gradle/wrapper/
+
+# Symlinked lib directory created by devenv.nix enterShell
+lib/
+
+# Kotlin
+.kotlin/
+out/
+*.class
+
+# IntelliJ IDEA
+.idea/
+*.iml
+*.iws
+*.ipr
+
+# macOS
+.DS_Store
+
+# Build artifacts
+*.jar
+*.zip
+!gradle/wrapper/gradle-wrapper.jar

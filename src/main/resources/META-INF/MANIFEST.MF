@@ -1,0 +1,6 @@
+Manifest-Version: 1.0
+Plugin-Class: io.github.nonsleepr.KGhidraMCP
+Plugin-Name: KGhidraMCP
+Plugin-Version: 1.0
+Plugin-Author: nonsleepr
+Plugin-Description: A Ghrida MCP server written in Kotlin
